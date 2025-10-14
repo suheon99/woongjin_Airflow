@@ -1,4 +1,4 @@
-# GA4 데이터 Daily Conversion Mart 구축 DAG
+# GA4 데이터 Daily Conversion Mart Pipeline 구축 DAG
 
 
 ### [1] 프로젝트 개요 (Overview)
