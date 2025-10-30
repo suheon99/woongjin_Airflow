@@ -1,15 +1,16 @@
 name: woongjin_airflow_env
 channels:
-  - defaults
+  - conda-forge
 dependencies:
   - python=3.11
+  - apache-airflow
   - pandas
   - numpy
-  - apache-airflow
   - requests
   - pip
   - pip:
       - google-cloud-bigquery
       - slack-sdk
       - boto3
+
 
