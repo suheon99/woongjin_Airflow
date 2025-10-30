@@ -1,11 +1,15 @@
-name: airflow_env
+name: woongjin_airflow_env
+channels:
+  - defaults
 dependencies:
   - python=3.10
   - pandas
   - numpy
   - apache-airflow
+  - requests
   - pip
   - pip:
-      - requests
-      - flask
+      - google-cloud-bigquery
+      - slack-sdk
+      - boto3
 
