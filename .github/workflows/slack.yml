@@ -11,69 +11,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # package.json이 있을 때만 실행
       - name: Install and Test
         if: hashFiles('**/package.json') != ''
         run: |
-          npm ci --prefer-offline --no-audit --fund=false
+          npm ci
           npm test --if-present
 
-      # 성공 시 알림
-      - name: Notify success to Slack
+      # ✅ 성공 알림
+      - name: Notify success
         if: ${{ success() }}
         uses: slackapi/slack-github-action@v2
         with:
+          webhook-type: incoming-webhook
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           payload: |
             {
-              "text": ":white_check_mark: 빌드 성공",
+              "text": ":white_check_mark: 빌드 성공!",
               "blocks": [
                 {
                   "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*${{ github.repository }}* `${{ github.ref_name }}` 브랜치 빌드 성공"
-                  }
-                },
-                {
-                  "type": "context",
-                  "elements": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "워크플로우: ${{ github.workflow }} • 실행: #${{ github.run_number }}"
-                    }
-                  ]
+                  "text": { "type": "mrkdwn", "text": "*${{ github.repository }}* `${{ github.ref_name }}` 빌드 성공 🎉" }
                 }
               ]
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      # 실패 시 알림
-      - name: Notify failure to Slack
+      # ❌ 실패 알림
+      - name: Notify failure
         if: ${{ failure() }}
         uses: slackapi/slack-github-action@v2
         with:
+          webhook-type: incoming-webhook
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           payload: |
             {
-              "text": ":x: ${{ github.repository }} 빌드 실패 (`${{ github.ref_name }}` 브랜치)",
+              "text": ":x: 빌드 실패 💥",
               "attachments": [
                 {
                   "color": "#D32F2F",
                   "fields": [
-                    { "title": "작업", "value": "${{ github.job }}", "short": true },
-                    { "title": "러너", "value": "${{ runner.os }}", "short": true }
-                  ],
-                  "footer": "에러 확인: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    { "title": "브랜치", "value": "${{ github.ref_name }}", "short": true },
+                    { "title": "실행 번호", "value": "${{ github.run_number }}", "short": true }
+                  ]
                 }
               ]
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
