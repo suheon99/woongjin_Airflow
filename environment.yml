@@ -1,24 +1,11 @@
-# Hello World 워크플로우
-name: Hello World
+name: airflow_env
+dependencies:
+  - python=3.10
+  - pandas
+  - numpy
+  - apache-airflow
+  - pip
+  - pip:
+      - requests
+      - flask
 
-# 모든 브랜치 push에서 실행
-on: [push]
-
-jobs:
-  # 작업명 : greet
-  greet:
-    # 실행 환경 : Ubuntu 최신 버전
-    runs-on: ubuntu-latest
-
-    # 실행할 단계들
-    steps:
-      # 인사 출력하기
-      - name: 인사 출력
-        run: |
-          echo "안녕하세요, GitHub Actions!"
-          echo "브랜치: ${{ github.ref }} / 유저: ${{ github.actor }}"
-
-      # 날짜 출력하기
-      - name: 현재 시간 출력
-        run: |
-          echo "현재 시각은 $(date) 입니다."
